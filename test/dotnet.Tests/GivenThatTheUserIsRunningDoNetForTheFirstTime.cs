@@ -17,13 +17,14 @@ namespace Microsoft.DotNet.Tests
     {
         private static CommandResult _firstDotnetUseCommandResult;
         private static DirectoryInfo _nugetCacheFolder;
+        private static DotnetCommand _command;
 
         static GivenThatTheUserIsRunningDotNetForTheFirstTime()
         {
             var testDirectory = TestAssetsManager.CreateTestDirectory("Dotnet_first_time_experience_tests");
             var testNugetCache = Path.Combine(testDirectory.Path, "nuget_cache");
 
-            var command = new DotnetCommand()
+            _command = new DotnetCommand()
                 .WithWorkingDirectory(testDirectory.Path);
             command.Environment["NUGET_PACKAGES"] = testNugetCache;
             command.Environment["DOTNET_SKIP_FIRST_TIME_EXPERIENCE"] = "";
@@ -37,6 +38,15 @@ namespace Microsoft.DotNet.Tests
         public void Using_dotnet_for_the_first_time_succeeds()
         {
             _firstDotnetUseCommandResult.Should().Pass();
+        }
+
+        [Fact]
+        public void Using_dotnet_for_the_first_time_with_non_verbs_doesnt_print_eula()
+        {
+            const string firstTimeUseWelcomeMessage = @".NET Command Line Tools";
+
+            _firstDotnetUseCommandResult = _command.ExecuteWithCapturedOutput("--info");
+            _firstDotnetUseCommandResult.StdOut.Should().StartWith(firstTimeUseWelcomeMessage);
         }
 
         [Fact]
