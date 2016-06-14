@@ -179,7 +179,7 @@ namespace Microsoft.DotNet.Cli.Build
         [Target(
             nameof(PublishTargets.PublishInstallerFilesToAzure),
             nameof(PublishTargets.PublishArchivesToAzure),
-            /*nameof(PublishTargets.PublishDebFilesToDebianRepo),*/ //https://github.com/dotnet/cli/issues/2973
+            nameof(PublishTargets.PublishDebFilesToDebianRepo),
             nameof(PublishTargets.PublishCliVersionBadge))]
         public static BuildTargetResult PublishArtifacts(BuildTargetContext c) => c.Success();
 
@@ -196,7 +196,7 @@ namespace Microsoft.DotNet.Cli.Build
 
         [Target(
             nameof(PublishSdkDebToDebianRepo))]
-        [BuildPlatforms(BuildPlatform.Ubuntu, "14.04")]
+        [BuildPlatforms(BuildPlatform.Ubuntu)]
         public static BuildTargetResult PublishDebFilesToDebianRepo(BuildTargetContext c)
         {
             return c.Success();
@@ -212,7 +212,7 @@ namespace Microsoft.DotNet.Cli.Build
         }
 
         [Target]
-        [BuildPlatforms(BuildPlatform.Ubuntu, "14.04")]
+        [BuildPlatforms(BuildPlatform.Ubuntu)]
         public static BuildTargetResult PublishSdkInstallerFileToAzure(BuildTargetContext c)
         {
             var version = CliNuGetVersion;
@@ -270,7 +270,7 @@ namespace Microsoft.DotNet.Cli.Build
         }
 
         [Target]
-        [BuildPlatforms(BuildPlatform.Ubuntu, "14.04")]
+        [BuildPlatforms(BuildPlatform.Ubuntu)]
         public static BuildTargetResult PublishSdkDebToDebianRepo(BuildTargetContext c)
         {
             var version = CliNuGetVersion;
