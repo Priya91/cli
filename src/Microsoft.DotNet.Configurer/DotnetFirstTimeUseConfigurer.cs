@@ -33,6 +33,11 @@ namespace Microsoft.DotNet.Configurer
             }
         }
 
+        public string FirstTimeUseSentinel
+        {
+            get { return _nugetCacheSentinel.SentinelPath; }
+        }
+
         private void PrintFirstTimeUseNotice()
         {
             const string firstTimeUseWelcomeMessage = @"Welcome to .NET Core!

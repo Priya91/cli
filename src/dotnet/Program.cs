@@ -84,6 +84,7 @@ namespace Microsoft.DotNet.Cli
             var success = true;
             var command = string.Empty;
             var lastArg = 0;
+            string firstTimeUseSentinelPath = null;
 
             for (; lastArg < args.Length; lastArg++)
             {
@@ -113,7 +114,7 @@ namespace Microsoft.DotNet.Cli
                 }
                 else
                 {
-                    ConfigureDotNetForFirstTimeUse();
+                    firstTimeUseSentinelPath = ConfigureDotNetForFirstTimeUse();
 
                     // It's the command, and we're done!
                     command = args[lastArg];
@@ -127,7 +128,9 @@ namespace Microsoft.DotNet.Cli
             }
 
             if (telemetryClient == null)
-                telemetryClient = new Telemetry();
+            {
+                telemetryClient = new Telemetry(firstTimeUseSentinelPath);
+            }
 
             var appArgs = (lastArg + 1) >= args.Length ? Enumerable.Empty<string>() : args.Skip(lastArg + 1).ToArray();
 
@@ -164,7 +167,7 @@ namespace Microsoft.DotNet.Cli
 
         }
 
-        private static void ConfigureDotNetForFirstTimeUse()
+        private static string ConfigureDotNetForFirstTimeUse()
         {
             using (PerfTrace.Current.CaptureTiming())
             {
@@ -182,9 +185,7 @@ namespace Microsoft.DotNet.Cli
                             environmentProvider);
 
                         dotnetConfigurer.Configure();
-
-                        if (!File.Exists(Telemetry.TelemetrySentinel))
-                            File.Create(Telemetry.TelemetrySentinel);
+                        return dotnetConfigurer.FirstTimeUseSentinel;
                     }
                 }
             }

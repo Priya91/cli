@@ -30,7 +30,7 @@ namespace Microsoft.DotNet.Configurer
             }
         }
 
-        private string SentinelPath => Path.Combine(NuGetCachePath, SENTINEL);
+        private string _sentinelPath => Path.Combine(NuGetCachePath, SENTINEL);
         private string InProgressSentinelPath => Path.Combine(NuGetCachePath, INPROGRESS_SENTINEL);
 
         private Stream InProgressSentinel { get; set; }
@@ -52,16 +52,21 @@ namespace Microsoft.DotNet.Configurer
             return CouldNotGetAHandleToTheInProgressSentinel();
         }
 
+        public string SentinelPath
+        {
+            get { return _sentinelPath; }
+        }
+
         public bool Exists()
         {
-            return _file.Exists(SentinelPath);
+            return _file.Exists(_sentinelPath);
         }
 
         public void CreateIfNotExists()
         {
             if (!Exists())
             {
-                _file.CreateEmptyFile(SentinelPath);
+                _file.CreateEmptyFile(_sentinelPath);
             }
         }
 
